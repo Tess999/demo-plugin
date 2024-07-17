@@ -79,7 +79,8 @@ abstract class Model {
 		$prepare = $condition->prepare_condition();
 		$sql    .= $prepare['sql'];
 
-		$sql_result = $wpdb->get_results( esc_sql( $wpdb->prepare( $sql, $prepare['vars'] ) ), ARRAY_A );
+		// TODO: esc_sql added slashes
+		$sql_result = $wpdb->get_results( $wpdb->prepare( $sql, $prepare['vars'] ), ARRAY_A );
 		foreach ( $sql_result as $value ) {
 			$model = new $child_class();
 			$model->set_values( $value );
@@ -107,7 +108,7 @@ abstract class Model {
 		}
 		$sql = 'DELETE FROM `' . $wpdb->prefix . $table_name . '` WHERE id=%d LIMIT 1';
 
-		return $wpdb->query( esc_sql( esc_sql( $wpdb->prepare( $sql, $id ) ) ) );
+		return $wpdb->query( esc_sql( $wpdb->prepare( $sql, $id ) ) );
 	}
 
 	/**

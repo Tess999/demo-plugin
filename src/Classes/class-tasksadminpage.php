@@ -7,6 +7,7 @@
 
 namespace sid\Classes;
 
+use sid\Components\Render;
 use sid\Components\TasksTable;
 
 /**
@@ -51,6 +52,12 @@ class TasksAdminPage {
 	public function show_page(): void {
 		$table = new TasksTable();
 		$table->prepare_items();
-		$table->display();
+
+		Render::view(
+			'admin/tasks-table',
+			array(
+				'table' => $table,
+			),
+		);
 	}
 }
