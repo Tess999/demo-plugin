@@ -7,8 +7,10 @@
 
 namespace sid\Models;
 
+use Exception;
 use sid\Components\Condition;
 use sid\Classes\DBTable;
+use Throwable;
 
 /**
  * Class JsonPlaceHolder
@@ -51,6 +53,26 @@ class JsonPlaceholderModel extends Model {
 	 * @var array
 	 */
 	protected array $error_log = array();
+
+	/**
+	 * Remove unused elements from DB
+	 *
+	 * @param array $exists_items - existing elements from an external source.
+	 *
+	 * @return void
+	 */
+	public static function delete_unused_elements( array $exists_items ) {
+		$items = self::find_all();
+		foreach ( $items as $item ) {
+			try {
+				if ( ! in_array( $item->get_id(), $exists_items, true ) ) {
+					self::delete( $item->get_id() );
+				}
+			} catch ( Throwable $tw ) {
+				// TODO: Add log
+			}
+		}
+	}
 
 	/**
 	 * Returns table name
@@ -98,21 +120,6 @@ class JsonPlaceholderModel extends Model {
 	}
 
 	/**
-	 * Set values from array
-	 *
-	 * @param array $values - values.
-	 *
-	 * @return void
-	 * @throws Exception - exception.
-	 */
-	protected function set_values( array $values ): void {
-		$this->set_id( intval( sanitize_text_field( wp_unslash( $values['id'] ) ) ) );
-		$this->set_user_id( intval( sanitize_text_field( wp_unslash( $values['user_id'] ) ) ) );
-		$this->set_task_name( sanitize_text_field( wp_unslash( ( $values['title'] ) ) ) );
-		$this->set_is_complete( strcasecmp( sanitize_text_field( wp_unslash( ( $values['title'] ) ) ), 'true' ) === 0 );
-	}
-
-	/**
 	 * Set ID
 	 *
 	 * @param int $id - ID.
@@ -138,7 +145,7 @@ class JsonPlaceholderModel extends Model {
 	 */
 	public function set_user_id( int $user_id ): void {
 		if ( $user_id < 1 ) {
-			throw new Exception( 'JsonPlaceholder set ID less that 1' );
+			throw new Exception( 'JsonPlaceholder set user ID less that 1' );
 		}
 
 		$this->user_id = $user_id;
@@ -162,7 +169,7 @@ class JsonPlaceholderModel extends Model {
 	 *
 	 * @return void
 	 */
-	protected function set_is_complete( bool $is_complete ): void {
+	public function set_is_complete( bool $is_complete ): void {
 		$this->is_complete = $is_complete;
 	}
 
@@ -186,7 +193,7 @@ class JsonPlaceholderModel extends Model {
 			$this->error_log[] = 'Task name is empty';
 		}
 
-		if ( empty( $this->is_complete ) ) {
+		if ( ! isset( $this->is_complete ) ) {
 			$this->error_log[] = '"Is complete" not set';
 		}
 
@@ -223,6 +230,21 @@ class JsonPlaceholderModel extends Model {
 	}
 
 	/**
+	 * Set values from array
+	 *
+	 * @param array $values - values.
+	 *
+	 * @return void
+	 * @throws Exception - exception.
+	 */
+	protected function set_values( array $values ): void {
+		$this->set_id( intval( sanitize_text_field( wp_unslash( $values['id'] ) ) ) );
+		$this->set_user_id( intval( sanitize_text_field( wp_unslash( $values['user_id'] ) ) ) );
+		$this->set_task_name( sanitize_text_field( wp_unslash( ( $values['title'] ) ) ) );
+		$this->set_is_complete( (bool) sanitize_text_field( wp_unslash( ( $values['completed'] ) ) ) );
+	}
+
+	/**
 	 * Create new record
 	 *
 	 * @return bool
@@ -247,6 +269,7 @@ class JsonPlaceholderModel extends Model {
 
 		if ( ! $result ) {
 			$this->error_log[] = $wpdb->last_error;
+
 			return false;
 		}
 		$this->id = $wpdb->insert_id;
@@ -281,7 +304,7 @@ class JsonPlaceholderModel extends Model {
 			array( Condition::FORMAT_NUMBER )
 		);
 
-		if ( ! $result ) {
+		if ( is_bool( $result ) ) {
 			$this->error_log[] = $wpdb->last_error;
 
 			return false;

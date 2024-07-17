@@ -79,7 +79,7 @@ abstract class Model {
 		$prepare = $condition->prepare_condition();
 		$sql    .= $prepare['sql'];
 
-		$sql_result = $wpdb->get_results( $wpdb->prepare( esc_sql( $sql ), $prepare['vars'] ), ARRAY_A );
+		$sql_result = $wpdb->get_results( esc_sql( $wpdb->prepare( $sql, $prepare['vars'] ) ), ARRAY_A );
 		foreach ( $sql_result as $value ) {
 			$model = new $child_class();
 			$model->set_values( $value );
@@ -105,8 +105,9 @@ abstract class Model {
 		if ( ! self::is_db_column( 'id' ) ) {
 			throw new Exception();
 		}
+		$sql = 'DELETE FROM `' . $wpdb->prefix . $table_name . '` WHERE id=%d LIMIT 1';
 
-		return $wpdb->query( $wpdb->prepare( 'DELETE FROM %s WHERE id=%d LIMIT 1', $wpdb->prefix . $table_name, $id ) );
+		return $wpdb->query( esc_sql( esc_sql( $wpdb->prepare( $sql, $id ) ) ) );
 	}
 
 	/**
@@ -181,7 +182,7 @@ abstract class Model {
 							FROM `INFORMATION_SCHEMA`.`COLUMNS` 
 							WHERE `TABLE_SCHEMA`='" . $wpdb->dbname . "' 
     						AND `TABLE_NAME`='" . $wpdb->prefix . $table_name . "'";
-		$sql_result = $wpdb->get_results( esc_sql( $sql ), ARRAY_A );
+		$sql_result = $wpdb->get_results( $sql, ARRAY_A );
 
 		foreach ( $sql_result as $column ) {
 			if ( strcmp( $column['COLUMN_NAME'], $column_name ) === 0 ) {

@@ -67,12 +67,12 @@ class Condition {
 	 * @return array
 	 */
 	public function get_conditions(): array {
-		$result              = array();
-		$result['where']     = $this->where;
-		$result['whereLike'] = $this->where_like;
-		$result['order']     = $this->order;
-		$result['limit']     = $this->limit;
-		$result['offset']    = $this->offset;
+		$result               = array();
+		$result['where']      = $this->where;
+		$result['where_like'] = $this->where_like;
+		$result['order']      = $this->order;
+		$result['limit']      = $this->limit;
+		$result['offset']     = $this->offset;
 
 		return $result;
 	}

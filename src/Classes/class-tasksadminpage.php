@@ -9,6 +9,11 @@ namespace sid\Classes;
 
 use sid\Components\TasksTable;
 
+/**
+ * Class TasksAdminPage
+ *
+ * @since 0.0.1
+ */
 class TasksAdminPage {
 
 	/**
@@ -31,7 +36,7 @@ class TasksAdminPage {
 			'tasks-sid',
 			array(
 				$this,
-				'show_page'
+				'show_page',
 			),
 			'dashicons-tickets',
 			40
@@ -48,5 +53,4 @@ class TasksAdminPage {
 		$table->prepare_items();
 		$table->display();
 	}
-
 }

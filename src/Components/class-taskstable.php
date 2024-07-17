@@ -1,8 +1,8 @@
 <?php
 /**
- * Class TasksTable
+ * Tasks table
  *
- * @since 0.0.1
+ * @package sid
  */
 
 namespace sid\Components;
@@ -10,17 +10,49 @@ namespace sid\Components;
 use sid\Models\JsonPlaceholderModel;
 use WP_List_Table;
 
+/**
+ * Class TasksTable
+ *
+ * @since 0.0.1
+ */
 class TasksTable extends WP_List_Table {
 
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
-		parent::__construct( array(
-			'singular' => 'tasks_link',
-			'plural'   => 'tasks_links',
-			'ajax'     => false,
-		) );
+		parent::__construct(
+			array(
+				'singular' => 'tasks_link',
+				'plural'   => 'tasks_links',
+				'ajax'     => false,
+			)
+		);
+	}
+
+	/**
+	 * Add refresh API data button
+	 *
+	 * @param string $which - position.
+	 *
+	 * @return void
+	 */
+	public function extra_tablenav( $which ): void {
+		if ( 'top' === $which ) {
+			$address = '/';
+			if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+				$address = sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+			}
+
+			$refresh_url = add_query_arg(
+				array(
+					'sid_update'  => 'true',
+					'sid_wpnonce' => wp_create_nonce( 'sid_api_nonce' ),
+				),
+				$address
+			);
+			echo '<a href="' . esc_url( $refresh_url ) . '">' . esc_html__( 'Refresh', 'sid' ) . '</a>';
+		}
 	}
 
 	/**
@@ -40,8 +72,8 @@ class TasksTable extends WP_List_Table {
 	/**
 	 * Returns row values
 	 *
-	 * @param $item
-	 * @param $column_name
+	 * @param array  $item - item.
+	 * @param string $column_name - column name.
 	 *
 	 * @return bool|mixed|string|void
 	 */
@@ -64,11 +96,12 @@ class TasksTable extends WP_List_Table {
 
 				return '<span style="color: ' . $color . '">' . $text . '</span>';
 			default:
-				return print_r( $item, true );
+				return esc_html( 'undefined' );
 		}
 	}
 
 	/**
+	 * Prepare items for table
 	 *
 	 * @return void
 	 */
@@ -83,11 +116,12 @@ class TasksTable extends WP_List_Table {
 		$condition->set_limit( 10 );
 		$records = JsonPlaceholderModel::find( $condition );
 
-
 		$columns                           = $this->get_columns();
 		$_wp_column_headers[ $screen->id ] = $columns;
 
 		/**
+		 * Records loop
+		 *
 		 * @var JsonPlaceholderModel[] $records
 		 */
 		foreach ( $records as $record ) {
@@ -103,6 +137,8 @@ class TasksTable extends WP_List_Table {
 	}
 
 	/**
+	 * Returns hidden columns
+	 *
 	 * @return array
 	 */
 	private function get_hidden_columns(): array {
