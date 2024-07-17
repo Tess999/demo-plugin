@@ -2,6 +2,8 @@
 
 namespace sid\Models;
 
+use Exception;
+
 /**
  * Class APIModel
  *
@@ -16,26 +18,18 @@ class APIModel {
 	 *
 	 * @throws Exception - exception.
 	 */
-	public static function get_data() {
-		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, self::API_URL );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-
-		$response  = curl_exec( $ch );
-		$error     = curl_errno( $ch );
-		$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-
-		curl_close( $ch );
-
-		if ( $error > 0 ) {
-			throw new Exception( 'CURL Error: ' . $error );
+	public static function get_data(): string {
+		$response = wp_remote_get(self::API_URL);
+		if (is_wp_error($response)) {
+			throw new Exception('HTTP Request Error: ' . $response->get_error_message());
 		}
 
-		if ( $http_code !== 200 ) {
-			throw new Exception( 'HTTP Code is not 200: ' . $http_code );
+		$http_code = wp_remote_retrieve_response_code($response);
+		if ($http_code !== 200) {
+			throw new Exception('HTTP Code is not 200: ' . $http_code);
 		}
 
-		return $response;
+		return wp_remote_retrieve_body($response);
 	}
 
 }
