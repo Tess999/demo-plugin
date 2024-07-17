@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Demo Plugin
- * Description: Demo plugin for CV
+ * Plugin Name: Demo API
+ * Description: Demo API for CV
  * Author: Sergei Iskakov
  * Author URI:  https://www.linkedin.com/in/iskakov-sergey-93099825/
  * Version: 1.0.0
