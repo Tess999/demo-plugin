@@ -4,7 +4,7 @@
  * Description: Demo plugin for CV
  * Author: Sergei Iskakov
  * Author URI:  https://www.linkedin.com/in/iskakov-sergey-93099825/
- * Version: 0.0.1
+ * Version: 1.0.0
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  *
