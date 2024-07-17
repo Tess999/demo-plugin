@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit();
 }
 
+use sid\Classes\Monolog;
 use sid\Classes\PluginSetup;
 use sid\Classes\TasksAdminPage;
 use sid\Controllers\ApiController;
@@ -25,6 +26,7 @@ require __DIR__ . '/vendor/autoload.php';
 define( 'SID_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SID_URL', plugin_dir_url( __FILE__ ) );
 
+new Monolog();
 new PluginSetup();
 new TasksAdminPage();
 new ApiController();

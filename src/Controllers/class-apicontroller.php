@@ -66,15 +66,15 @@ class ApiController {
 							$model->set_is_complete( (bool) sanitize_text_field( wp_unslash( ( $item['completed'] ) ) ) );
 							$model->save();
 						} catch ( Throwable $tw ) {
-							// TODO: Add error log.
+							set_sid_log( $tw->getMessage(), 'error' );
 						}
 					}
 
-					// Remove unused elements
+					// Remove unused elements.
 					JsonPlaceholderModel::delete_unused_elements( $exists_items );
 				}
 			} catch ( Throwable $tw ) {
-				// TODO: Add error log.
+				set_sid_log( $tw->getMessage(), 'error' );
 			}
 			wp_safe_redirect( remove_query_arg( array( 'sid_update', 'sid_wpnonce' ) ) );
 			exit;

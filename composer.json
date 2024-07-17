@@ -3,7 +3,10 @@
   "description": "Demo plugin for CV",
   "type": "project",
   "autoload": {
-    "classmap": ["src"]
+    "classmap": ["src"],
+    "files": [
+      "./src/Helpers/helper.php"
+    ]
   },
   "authors": [
     {
@@ -12,7 +15,8 @@
     }
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "monolog/monolog": "^3.7"
   },
   "minimum-stability": "stable"
 }

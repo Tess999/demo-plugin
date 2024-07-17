@@ -69,7 +69,7 @@ class JsonPlaceholderModel extends Model {
 					self::delete( $item->get_id() );
 				}
 			} catch ( Throwable $tw ) {
-				// TODO: Add log
+				set_sid_log( $tw->getMessage(), 'error' );
 			}
 		}
 	}
