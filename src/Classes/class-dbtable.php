@@ -34,6 +34,7 @@ class DBTable {
 			  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			  user_id BIGINT UNSIGNED NOT NULL,
 			  title TEXT NOT NULL,
+			  completed TINYINT(1) NOT NULL,
 			  PRIMARY KEY (id)
 			) $charset_collate ENGINE=InnoDB;";
 
