@@ -5,8 +5,9 @@
  * @package sid
  */
 
+namespace sid\Models;
+
 use sid\Components\Condition;
-use sid\Models\Model;
 use sid\Classes\DBTable;
 
 /**
