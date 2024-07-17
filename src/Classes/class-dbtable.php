@@ -35,7 +35,8 @@ class DBTable {
 			  user_id BIGINT UNSIGNED NOT NULL,
 			  title TEXT NOT NULL,
 			  completed TINYINT(1) NOT NULL,
-			  PRIMARY KEY (id)
+			  PRIMARY KEY (id),
+			  INDEX (title(255))
 			) $charset_collate ENGINE=InnoDB;";
 
 		dbDelta( $sql );
