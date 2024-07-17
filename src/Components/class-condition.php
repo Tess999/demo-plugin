@@ -62,6 +62,13 @@ class Condition {
 	protected ?int $offset = null;
 
 	/**
+	 * Random values
+	 *
+	 * @var bool
+	 */
+	protected bool $random = false;
+
+	/**
 	 * Return all condition in array.
 	 *
 	 * @return array
@@ -170,6 +177,17 @@ class Condition {
 	}
 
 	/**
+	 * Set random
+	 *
+	 * @param bool $rand - enable random.
+	 *
+	 * @return void
+	 */
+	public function set_random( bool $rand ) {
+		$this->random = $rand;
+	}
+
+	/**
 	 * Prepare condition
 	 *
 	 * @return array
@@ -200,11 +218,15 @@ class Condition {
 			$vars[] = trim( $value[1] );
 		}
 
-		foreach ( $order as $id => $value ) {
-			if ( ! is_numeric( strpos( $sql, 'ORDER BY' ) ) ) {
-				$sql .= " ORDER BY {$value['column']} {$value['type']}";
-			} else {
-				$sql .= ", {$value['column']} {$value['type']}";
+		if ( $this->random ) {
+			$sql .= ' ORDER BY RAND()';
+		} else {
+			foreach ( $order as $id => $value ) {
+				if ( ! is_numeric( strpos( $sql, 'ORDER BY' ) ) ) {
+					$sql .= " ORDER BY {$value['column']} {$value['type']}";
+				} else {
+					$sql .= ", {$value['column']} {$value['type']}";
+				}
 			}
 		}
 

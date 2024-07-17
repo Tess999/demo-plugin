@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 use sid\Classes\PluginSetup;
 use sid\Classes\TasksAdminPage;
 use sid\Controllers\ApiController;
+use sid\ShortCodes\TasksShortCode;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -27,3 +28,4 @@ define( 'SID_URL', plugin_dir_url( __FILE__ ) );
 new PluginSetup();
 new TasksAdminPage();
 new ApiController();
+new TasksShortCode();
